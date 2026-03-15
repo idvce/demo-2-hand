@@ -1,0 +1,39 @@
+import pandas as pd
+from sklearn.discriminant_analysis import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import FunctionTransformer, RobustScaler
+df = pd.read_json('used_cars.json') 
+def create_normalization_pipeline(df):
+    num_cols = ['mileage', 'engine_size', 'year']
+    target_col = ['price']
+    
+    # Features pipeline
+    feature_pipe = Pipeline([
+        ('log', FunctionTransformer(np.log1p)),  # Skew fix
+        ('robust', RobustScaler())  #
+    ])
+    
+    # Target pipeline  
+    target_pipe = Pipeline([
+        ('log', FunctionTransformer(np.log1p)),
+        ('standard', StandardScaler())
+    ])
+    
+    preprocessor = ColumnTransformer([
+        ('features', feature_pipe, num_cols),
+        ('target', target_pipe, target_col)
+    ])
+    
+    return preprocessor
+
+# SPLIT FIRST (avoid leakage!)
+from sklearn.model_selection import train_test_split
+X = df[num_cols]
+y = df[target_col]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+preprocessor = create_normalization_pipeline(df)
+X_train_scaled = preprocessor.fit_transform(X_train, y_train)
+X_test_scaled = preprocessor.transform(X_test)

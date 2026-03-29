@@ -1,0 +1,43 @@
+[
+  {
+    "name": "/system/query",
+    "description": "This API is used for executing any SQL statement for specified cluster and database.",
+    "method": "POST",
+    "endpoint": "/system/query",
+    "params": [
+      {
+        "name": "cluster_id",
+        "type": "string",
+        "required": 0,
+        "default": "10833043326717076349",
+        "description": "TiDB Cluster to use"
+      },
+      {
+        "name": "database",
+        "type": "string",
+        "required": 0,
+        "default": "ady",
+        "description": "Database within the cluster"
+      },
+      {
+        "name": "sql",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "SQL statement"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "System/Data",
+    "batch_operation": 0,
+    "sql_file": "",
+    "type": "system-data",
+    "return_type": "json"
+  }
+]
